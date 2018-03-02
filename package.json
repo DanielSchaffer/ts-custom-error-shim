@@ -1,0 +1,69 @@
+{
+  "name": "ts-custom-error-shim",
+  "version": "1.0.0-alpha.0",
+  "description": "A TypeScript custom error shim that allows properly testing custom errors",
+  "main": "index.js",
+  "module": "index.js",
+  "typings": "index.d.ts",
+  "scripts": {
+    "copy:package.json": "cp package.json ./dist",
+    "copy:md": "cp *.md ./dist",
+    "copy": "npm run copy:package.json && npm run copy:md",
+    "prebuild": "rimraf dist",
+    "build": "tsc -p ./tsconfig.build.json",
+    "postbuild": "npm run copy",
+    "postversion": "npm run build && cd ./dist && npm publish && cd ..",
+    "postpublish": "git push && git push --tags",
+    "coverage": "nyc npm test",
+    "test": "mocha --require ts-node/register --require ./ --require ./mocha.config src/**/*.spec.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DanielSchaffer/ts-custom-error-shim.git"
+  },
+  "keywords": [
+    "custom-error",
+    "typescript",
+    "error"
+  ],
+  "author": "Daniel Schaffer <dan@dandoes.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DanielSchaffer/ts-custom-error-shim/issues"
+  },
+  "homepage": "https://github.com/DanielSchaffer/ts-custom-error-shim#readme",
+  "devDependencies": {
+    "@types/chai": "^4.1.2",
+    "@types/mocha": "^2.2.48",
+    "@types/node": "^9.4.6",
+    "@types/sinon": "^4.3.0",
+    "@types/sinon-chai": "^2.7.29",
+    "chai": "^4.1.2",
+    "jsdom": "^11.6.2",
+    "mocha": "^5.0.1",
+    "nyc": "^11.4.1",
+    "rimraf": "^2.6.2",
+    "sinon": "^4.4.2",
+    "sinon-chai": "^2.14.0",
+    "ts-node": "^5.0.1",
+    "typescript": "^2.7.2"
+  },
+  "nyc": {
+    "sourceMap": true,
+    "instrument": true,
+    "reporter": [
+      "html",
+      "text"
+    ],
+    "include": [
+      "src/**/*.ts"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "exclude": [
+      "**/*.spec.ts",
+      "test"
+    ]
+  }
+}
