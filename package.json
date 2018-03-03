@@ -1,6 +1,6 @@
 {
   "name": "ts-custom-error-shim",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "A TypeScript custom error shim that allows properly testing custom errors",
   "main": "index.js",
   "module": "index.js",
