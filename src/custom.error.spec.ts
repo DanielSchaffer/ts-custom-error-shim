@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import * as errno from 'errno';
 
 export class ExampleError extends Error {
 
@@ -16,18 +17,19 @@ export class SubExampleError extends ExampleError {
     }
 }
 
-describe.only('CustomError', () => {
+describe('CustomError', () => {
 
     it('subclasses are instances of Error', () => {
-        expect(new ExampleError()).to.be.instanceOf(Error);
+        expect(new ExampleError()).to.be.an.instanceOf(Error);
     });
 
     it('subclasses are instances of Error when thrown', () => {
+        expect(() => { throw new ExampleError() }).to.throw;
         expect(() => { throw new ExampleError() }).to.throw(Error);
     });
 
     it('subclasses are instances of themselves when instantiated', () => {
-        expect(new ExampleError()).to.be.instanceOf(ExampleError);
+        expect(new ExampleError()).to.be.an.instanceOf(ExampleError);
     });
 
     it('subclasses are instances of themselves when thrown', () => {
@@ -54,7 +56,7 @@ describe.only('CustomError', () => {
     });
 
     it('sub-subclasses are instances of Error', () => {
-        expect(new SubExampleError()).to.be.instanceOf(Error);
+        expect(new SubExampleError()).to.be.an.instanceOf(Error);
     });
 
     it('sub-subclasses are instances of Error when thrown', () => {
@@ -71,7 +73,7 @@ describe.only('CustomError', () => {
     });
 
     it('sub-subclasses are instances of their super class', () => {
-        expect(new SubExampleError()).to.be.instanceOf(ExampleError);
+        expect(new SubExampleError()).to.be.an.instanceOf(ExampleError);
     });
 
     it('sub-subclasses are instances of their super class when thrown', () => {
@@ -92,4 +94,32 @@ describe.only('CustomError', () => {
         expect(error.isExample).to.exist;
         expect(error.isExample).to.be.true;
     });
+
+    describe('errno', () => {
+        it('allows errno.custom to create its custom error', () => {
+            errno.custom.createError('ErrnoError');
+        });
+
+        it('can instantiate an errno custom error', () => {
+            const ErrnoError = errno.custom.createError('ErrnoError');
+            new ErrnoError();
+        });
+
+        it('is an instance of Error', () => {
+            const ErrnoError = errno.custom.createError('ErrnoError');
+            const error = new ErrnoError();
+            expect(error).to.be.an.instanceOf(Error);
+        });
+
+        it('is an instance of itself when instantiated', () => {
+            const ErrnoError = errno.custom.createError('ErrnoError');
+            const error = new ErrnoError();
+            expect(error).to.be.an.instanceOf(ErrnoError);
+        });
+
+        it('is an instance of itself when thrown', () => {
+            const ErrnoError = errno.custom.createError('ErrnoError');
+            expect(() => { throw new ErrnoError() }).to.throw(ErrnoError);
+        });
+    })
 });

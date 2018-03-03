@@ -9,16 +9,32 @@ export interface CustomErrorShimConstructor {
 
 export class CustomErrorShim implements Error {
 
-    public readonly name: string;
-    public readonly message: string;
-    public readonly stack: string;
+    public name: string;
+    public message: string;
+    public stack: string;
 
     constructor(message?: string) {
-        this.name = this.constructor.name;
-        this.message = message;
+        try {
+            this.name = this.constructor.name;
+        } catch (err) {
+            // ignore - some error helpers (like this one!) make `name` read-only
+        }
+        try {
+            this.message = message;
+        } catch (err) {
+            // ignore - some error helpers (like this one!) make `message` read-only
+        }
 
-        const superCtrPrototype = Object.getPrototypeOf(Object.getPrototypeOf(this));
-        Object.setPrototypeOf(this.constructor.prototype, superCtrPrototype);
+
+        let superCtrPrototype = Object.getPrototypeOf(Object.getPrototypeOf(this));
+        if (superCtrPrototype === this.constructor.prototype) {
+            // most likely another custom error helper referring to Error
+            superCtrPrototype = OGError.prototype;
+        }
+
+        if (superCtrPrototype.constructor !== CustomErrorShim) {
+            Object.setPrototypeOf(this.constructor.prototype, superCtrPrototype);
+        }
 
         OGError.captureStackTrace(this, this.constructor);
     }
@@ -52,6 +68,5 @@ export const OGError: ErrorConstructor =
         global.Error;
 
 if ((global.Error as any) !== CustomErrorShim) {
-    console.log('replacing', global.Error);
     (global as any).Error = CustomErrorShim;
 }
