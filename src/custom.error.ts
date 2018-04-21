@@ -60,6 +60,10 @@ export class CustomErrorShim implements Error {
         return OGError;
     }
 
+    public toString(): string {
+        return OGError.prototype.toString.call(this);
+    }
+
 }
 
 export const OGError: ErrorConstructor =
