@@ -15,6 +15,13 @@ export class CustomErrorShim implements Error {
   public stack: string;
 
   constructor(message?: string) {
+
+    if (!this) {
+      // for when Error is called as a function and not a constructor
+      // @ts-ignore
+      return OGError(message);
+    }
+
     try {
       this.name = this.constructor.name;
     } catch (err) {

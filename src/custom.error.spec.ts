@@ -1,6 +1,8 @@
 import { expect } from 'chai';
 import * as errno from 'errno';
 
+import { CustomErrorShim } from './custom.error'
+
 export class ExampleError extends Error {
 
     public readonly isExample = true;
@@ -18,6 +20,11 @@ export class SubExampleError extends ExampleError {
 }
 
 describe('CustomError', () => {
+
+  it('returns the invocation of the original Error function when called as a function instead of a constructor', function() {
+    const err = Error('foo');
+    expect(err).to.be.instanceof(CustomErrorShim.OGError);
+  })
 
   it('subclasses are instances of Error', () => {
     expect(new ExampleError()).to.be.an.instanceOf(Error);
