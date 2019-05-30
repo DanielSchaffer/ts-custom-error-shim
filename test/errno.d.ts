@@ -1,15 +1,15 @@
 declare module 'errno' {
 
-    interface Errno {
-        custom: ErrnoCustom;
-    }
+  interface Errno {
+    custom: ErrnoCustom;
+  }
 
-    interface ErrnoCustom {
-        createError(name: string, parent?: Function): ErrorConstructor;
-    }
+  interface ErrnoCustom {
+    createError(name: string, parent?: Function): ErrorConstructor;
+  }
 
-    const errno: Errno;
+  const errno: Errno;
 
-    export = errno;
+  export = errno;
 
 }
